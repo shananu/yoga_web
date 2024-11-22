@@ -1,1 +1,112 @@
-const leftArrow=document.querySelector(".left-arrow"),rightArrow=document.querySelector(".right-arrow"),carousel=document.querySelector(".carousel-items");leftArrow.addEventListener("click",()=>{carousel.scrollBy({left:-300,behavior:"smooth"})}),rightArrow.addEventListener("click",()=>{carousel.scrollBy({left:300,behavior:"smooth"})});const calendarDates=document.querySelectorAll(".calendar-date"),today=new Date,todayDate=today.getDate();calendarDates.forEach(t=>{parseInt(t.textContent)===todayDate&&t.classList.add("calendar-today"),t.addEventListener("click",()=>{t.classList.toggle("checked")})}),document.addEventListener("DOMContentLoaded",()=>{let t=document.querySelectorAll(".bar");t.forEach(t=>{t.addEventListener("mouseover",()=>{t.style.backgroundColor="#ff8800"}),t.addEventListener("mouseout",()=>{t.style.backgroundColor=t.classList.contains("highlight")?"#ffcc00":"#276488"})})}),document.addEventListener("DOMContentLoaded",()=>{let t=document.querySelectorAll(".bar");t.forEach(t=>{t.addEventListener("mouseover",()=>{t.style.backgroundColor="#ff8800"}),t.addEventListener("mouseout",()=>{t.style.backgroundColor=t.classList.contains("highlight")?"#ffcc00":"#276488"})})});let activityDuration=0,activityInterval=1,lastActivityTime=Date.now(),inactivityTimeout=3e5,weeklyActivity=[0,0,0,0,0,0,0];function detectActivity(){let t=Date.now();t-lastActivityTime<=inactivityTimeout&&(activityDuration+=activityInterval),lastActivityTime=t}function updateActivityDisplay(){let t=Math.floor(activityDuration/3600),e=Math.floor(activityDuration%3600/60),i=`${t}h ${e}m`;document.querySelector(".hours-info p strong").innerText=i}function updateActivityGraph(){["sunday","monday","tuesday","wednesday","thursday","friday","saturday"].forEach((t,e)=>{let i=document.getElementById(t),a=weeklyActivity[e]/10*100;i.style.height=`${a}%`})}document.addEventListener("mousemove",detectActivity),document.addEventListener("keydown",detectActivity),setInterval(()=>{updateActivityDisplay(),updateActivityGraph()},1e3),setInterval(()=>{weeklyActivity=[0,0,0,0,0,0,0]},6048e5);
+const leftArrow = document.querySelector('.left-arrow');
+const rightArrow = document.querySelector('.right-arrow');
+const carousel = document.querySelector('.carousel-items');
+
+leftArrow.addEventListener('click', () => {
+  carousel.scrollBy({ left: -300, behavior: 'smooth' });
+});
+
+rightArrow.addEventListener('click', () => {
+  carousel.scrollBy({ left: 300, behavior: 'smooth' });
+});
+const calendarDates = document.querySelectorAll(".calendar-date");
+const today = new Date();
+
+// Highlight today's date
+const todayDate = today.getDate();
+calendarDates.forEach((dateElement) => {
+  if (parseInt(dateElement.textContent) === todayDate) {
+    dateElement.classList.add("calendar-today");
+  }
+
+  // Toggle streak on click
+  dateElement.addEventListener("click", () => {
+    dateElement.classList.toggle("checked");
+  });
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const bars = document.querySelectorAll(".bar");
+
+  bars.forEach((bar) => {
+    bar.addEventListener("mouseover", () => {
+      bar.style.backgroundColor = "#ff8800";
+    });
+
+    bar.addEventListener("mouseout", () => {
+      bar.style.backgroundColor = bar.classList.contains("highlight")
+        ? "#ffcc00"
+        : "#276488";
+    });
+  });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const bars = document.querySelectorAll(".bar");
+  
+    bars.forEach((bar) => {
+      bar.addEventListener("mouseover", () => {
+        bar.style.backgroundColor = "#ff8800";
+      });
+  
+      bar.addEventListener("mouseout", () => {
+        bar.style.backgroundColor = bar.classList.contains("highlight")
+          ? "#ffcc00"
+          : "#276488";
+      });
+    });
+  });
+
+  // JavaScript to track user activity and update the activity graph
+
+let activityDuration = 0; // In seconds
+let activityInterval = 1; // Check every 1 second for activity
+let lastActivityTime = Date.now(); // Track the last activity time
+let inactivityTimeout = 5 * 60 * 1000; // Inactivity period (5 minutes)
+let weeklyActivity = [0, 0, 0, 0, 0, 0, 0]; // Store activity for each day of the week (Sunday-Saturday)
+
+// Function to detect activity
+function detectActivity() {
+  const currentTime = Date.now();
+  if (currentTime - lastActivityTime <= inactivityTimeout) {
+    activityDuration += activityInterval; // Increase activity duration by interval
+  }
+  lastActivityTime = currentTime;
+}
+
+// Function to update the "Hours Activity" section with the active time
+function updateActivityDisplay() {
+  const hours = Math.floor(activityDuration / 3600); // Convert seconds to hours
+  const minutes = Math.floor((activityDuration % 3600) / 60); // Convert seconds to minutes
+  const seconds = activityDuration % 60; // Remaining seconds
+  const activeTimeText = `${hours}h ${minutes}m`;
+
+  // Update the displayed time in the dashboard
+  document.querySelector('.hours-info p strong').innerText = activeTimeText;
+}
+
+// Update the weekly activity graph (bar height) based on activity for each day
+function updateActivityGraph() {
+  // Example activity data (replace with actual calculation)
+  let days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+  days.forEach((day, index) => {
+    const bar = document.getElementById(day);
+    const activityPercent = (weeklyActivity[index] / 10) * 100; // Activity is scaled by a factor (example)
+    bar.style.height = `${activityPercent}%`;
+  });
+}
+
+// Track user activity (using mouse movement and keypress)
+document.addEventListener('mousemove', detectActivity);
+document.addEventListener('keydown', detectActivity);
+
+// Update activity every second
+setInterval(() => {
+  updateActivityDisplay();
+  updateActivityGraph();
+}, 1000);
+
+// Reset weekly data (if needed)
+setInterval(() => {
+  weeklyActivity = [0, 0, 0, 0, 0, 0, 0]; // Reset for the new week
+}, 7 * 24 * 60 * 60 * 1000); // Reset every 7 days
+
